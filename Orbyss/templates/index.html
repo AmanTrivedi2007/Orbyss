@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbyss - Unified Developer Collaboration Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #eef2f6 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 1.5px solid rgba(51, 65, 85, 0.2);
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #334155;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+
+        .hero {
+            padding: 5rem 0 3rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.15;
+            color: #0f172a;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-accent {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .section {
+            padding: 5rem 0;
+            border-top: 1px solid rgba(51, 65, 85, 0.1);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .feature-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #0f172a;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.08);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            animation: slideInLeft 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .feature-list li:nth-child(1) { animation-delay: 0.1s; }
+        .feature-list li:nth-child(2) { animation-delay: 0.2s; }
+        .feature-list li:nth-child(3) { animation-delay: 0.3s; }
+        .feature-list li:nth-child(4) { animation-delay: 0.4s; }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon-small {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-text strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-text p {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .feature-visual {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            font-size: 5rem;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tech-item {
+            background: white;
+            border: 1px solid rgba(51, 65, 85, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .tech-item:nth-child(1) { animation-delay: 0.1s; }
+        .tech-item:nth-child(2) { animation-delay: 0.2s; }
+        .tech-item:nth-child(3) { animation-delay: 0.3s; }
+        .tech-item:nth-child(4) { animation-delay: 0.4s; }
+        .tech-item:nth-child(5) { animation-delay: 0.5s; }
+        .tech-item:nth-child(6) { animation-delay: 0.6s; }
+
+        .tech-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .tech-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-type {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 4rem;
+            text-align: center;
+            color: white;
+            margin: 4rem 0;
+            animation: fadeInUp 0.8s ease-out;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .comparison-block {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(51, 65, 85, 0.1);
+        }
+
+        .comparison-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .comparison-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        .comparison-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #cbd5e1;
+            padding: 3rem;
+            margin-top: 4rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #667eea;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1.5rem 0;
+        }
+
+        .footer-bottom {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .features-showcase {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .feature-visual {
+                min-height: 250px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .footer-links {
+                gap: 1rem;
+                flex-direction: column;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Orbyss</div>
+        <div class="header-actions">
+            <a href="/auth/login/" class="btn">Login</a>
+            <a href="/auth/registration/" class="btn btn-primary">Sign up Free</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>One Platform. <span class="hero-accent">All Your Collaboration Needs.</span></h1>
+            <p>Stop jumping between Slack, Notion, Jira, and GitHub. Manage projects, communicate, and track progress—all unified in one powerful workspace.</p>
+            <div class="cta-buttons">
+                <a href="/auth/registration/" class="btn btn-primary">Get Started Free</a>
+                <button class="btn btn-secondary" onclick="alert('Demo coming soon!')">Watch Demo</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-section">
+                <div class="stat">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Teams</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">500K+</div>
+                    <div class="stat-label">Tasks Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime SLA</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Problem vs Solution -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Switch to Orbyss?</h2>
+                <p class="section-subtitle">Reduce context switching. Increase productivity. Simplify collaboration.</p>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-block">
+                    <div class="comparison-title">
+                        <span style="font-size: 1.5rem;">❌</span> Without Orbyss
+                    </div>
+                    <div class="comparison-items">
+                        <div class="comparison-item">
+                            <span class="comparison-icon">•</span>
+                            <span>Switching between 5+ tools constantly</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">•</span>
+                            <span>Information scattered across platforms</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">•</span>
+                            <span>Missed messages and notifications</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">•</span>
+                            <span>No unified project visibility</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">•</span>
+                            <span>Expensive subscriptions (5+ tools)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="comparison-title">
+                        <span style="font-size: 1.5rem; color: #22c55e;">✓</span> With Orbyss
+                    </div>
+                    <div class="comparison-items">
+                        <div class="comparison-item">
+                            <span class="comparison-icon" style="color: #22c55e;">✓</span>
+                            <span>Everything in one unified dashboard</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon" style="color: #22c55e;">✓</span>
+                            <span>Centralized knowledge & documentation</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon" style="color: #22c55e;">✓</span>
+                            <span>Real-time updates & notifications</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon" style="color: #22c55e;">✓</span>
+                            <span>Complete project overview & analytics</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon" style="color: #22c55e;">✓</span>
+                            <span>One platform, lower total cost</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need</h2>
+                <p class="section-subtitle">Powerful features designed for modern development teams</p>
+            </div>
+
+            <!-- Feature 1 -->
+            <div class="features-showcase">
+                <div class="feature-content">
+                    <h3>Task Management</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon-small">📋</span>
+                            <div class="feature-text">
+                                <strong>Kanban Boards</strong>
+                                <p>Drag-drop organization with custom workflows</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">🏷️</span>
+                            <div class="feature-text">
+                                <strong>Labels & Priorities</strong>
+                                <p>Tag, categorize, and prioritize work instantly</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">📅</span>
+                            <div class="feature-text">
+                                <strong>Deadlines & Tracking</strong>
+                                <p>Set milestones and track progress in real-time</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">👥</span>
+                            <div class="feature-text">
+                                <strong>Team Assignment</strong>
+                                <p>Assign tasks to multiple team members</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-visual">📊</div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="features-showcase" style="margin-top: 4rem;">
+                <div class="feature-visual">💬</div>
+                <div class="feature-content">
+                    <h3>Communication Hub</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon-small">💭</span>
+                            <div class="feature-text">
+                                <strong>Channel Conversations</strong>
+                                <p>Organize discussions by project or topic</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">🔔</span>
+                            <div class="feature-text">
+                                <strong>Instant Notifications</strong>
+                                <p>Never miss mentions or important updates</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">📎</span>
+                            <div class="feature-text">
+                                <strong>File Sharing</strong>
+                                <p>Share attachments directly in messages</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">⌨️</span>
+                            <div class="feature-text">
+                                <strong>Typing Indicators</strong>
+                                <p>See when teammates are composing messages</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="features-showcase" style="margin-top: 4rem;">
+                <div class="feature-content">
+                    <h3>Documentation & Wiki</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon-small">📖</span>
+                            <div class="feature-text">
+                                <strong>Markdown Editor</strong>
+                                <p>Write beautiful documentation with live preview</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">🔍</span>
+                            <div class="feature-text">
+                                <strong>Full-Text Search</strong>
+                                <p>Find anything instantly across your docs</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">🏗️</span>
+                            <div class="feature-text">
+                                <strong>Nested Pages</strong>
+                                <p>Organize knowledge in hierarchical structures</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">🤖</span>
+                            <div class="feature-text">
+                                <strong>AI Summaries</strong>
+                                <p>Auto-generate docs from meeting notes</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-visual">📝</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built on Modern Tech</h2>
+                <p class="section-subtitle">Enterprise-grade technologies for reliability and scale</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-name">React</div>
+                    <div class="tech-type">Frontend</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">FastAPI</div>
+                    <div class="tech-type">Backend</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">MongoDB</div>
+                    <div class="tech-type">Database</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">WebSockets</div>
+                    <div class="tech-type">Real-Time</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Redis</div>
+                    <div class="tech-type">Caching</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Docker</div>
+                    <div class="tech-type">Deployment</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Unify Your Workflow?</h2>
+            <p>Start free today. No credit card required. Scale when you grow.</p>
+            <a href="/auth/registration" class="btn btn-primary" style="color: white; border: none; background: white; color: #667eea; padding: 0.875rem 2.5rem; font-size: 1rem; font-weight: 700;">Get Started Now →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/Term/" class="footer-link">Terms & Conditions</a>
+                <a href="/policy/" class="footer-link">Privacy Policy</a>
+                <a href="mailto:support@orbyss.io" class="footer-link">Contact Us</a>
+                <a href="https://support.orbyss.io" class="footer-link">Support</a>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Orbyss. All rights reserved. | Built by developers, for developers.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

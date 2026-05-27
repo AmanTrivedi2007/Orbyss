@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Orbyss</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #eef2f6 100%);
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+
+        .last-updated {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .toc {
+            background: white;
+            border: 1px solid rgba(51, 65, 85, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #0f172a;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.75rem;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(51, 65, 85, 0.1);
+        }
+
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0f172a;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .content-section h3 {
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #334155;
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        .content-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        .highlight {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .highlight strong {
+            color: #0f172a;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .warning strong {
+            color: #dc2626;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #cbd5e1;
+            padding: 3rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .footer-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Orbyss</div>
+        <a href="/" class="back-link">← Back to Home</a>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Terms of Service</h1>
+            <p class="last-updated">Last updated: May 26, 2024</p>
+        </div>
+
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#acceptance">1. Acceptance of Terms</a></li>
+                <li><a href="#license">2. License & Apache 2.0</a></li>
+                <li><a href="#user-accounts">3. User Accounts</a></li>
+                <li><a href="#acceptable-use">4. Acceptable Use Policy</a></li>
+                <li><a href="#intellectual-property">5. Intellectual Property Rights</a></li>
+                <li><a href="#content-ownership">6. Content Ownership & Responsibility</a></li>
+                <li><a href="#limitation-liability">7. Limitation of Liability</a></li>
+                <li><a href="#disclaimer">8. Warranty Disclaimer</a></li>
+                <li><a href="#termination">9. Termination</a></li>
+                <li><a href="#governing-law">10. Governing Law & Disputes</a></li>
+                <li><a href="#contact">11. Contact Information</a></li>
+            </ul>
+        </div>
+
+        <div class="content-section" id="acceptance">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using Orbyss ("Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+            <p>These Terms of Service may be updated at any time without notice. Continued use of the Service following any changes constitutes your acceptance of the new Terms. We recommend reviewing this page regularly for updates.</p>
+        </div>
+
+        <div class="content-section" id="license">
+            <h2>2. License & Apache 2.0</h2>
+            <p>Orbyss is distributed under the Apache License, Version 2.0. The source code is available on GitHub and subject to the terms of the Apache 2.0 License.</p>
+
+            <h3>Key Points:</h3>
+            <ul>
+                <li>You may use, modify, and distribute the software freely</li>
+                <li>You must include a copy of the Apache 2.0 License with any distribution</li>
+                <li>You must state significant changes made to the code</li>
+                <li>The software is provided "AS IS" without warranties</li>
+                <li>The Apache 2.0 License provides an express grant of patent rights from contributors</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>License Details:</strong> For the full Apache 2.0 License text, visit <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" style="color: #667eea;">https://www.apache.org/licenses/LICENSE-2.0</a>
+            </div>
+
+            <p>These Terms of Service apply to the hosted Service. The underlying source code is governed by the Apache 2.0 License.</p>
+        </div>
+
+        <div class="content-section" id="user-accounts">
+            <h2>3. User Accounts</h2>
+
+            <h3>Account Creation</h3>
+            <p>To use the Service, you must create an account by providing accurate, current, and complete information. You are responsible for:</p>
+            <ul>
+                <li>Maintaining confidentiality of your password and account credentials</li>
+                <li>All activity that occurs under your account</li>
+                <li>Immediately notifying us of unauthorized access or use</li>
+                <li>Ensuring you are at least 18 years old (or the age of majority in your jurisdiction)</li>
+            </ul>
+
+            <h3>Account Restrictions</h3>
+            <p>You agree not to:</p>
+            <ul>
+                <li>Create multiple accounts to circumvent restrictions</li>
+                <li>Share your account credentials with third parties</li>
+                <li>Use another person's account without permission</li>
+                <li>Provide false information during registration</li>
+            </ul>
+        </div>
+
+        <div class="content-section" id="acceptable-use">
+            <h2>4. Acceptable Use Policy</h2>
+
+            <h3>Prohibited Activities</h3>
+            <p>You agree not to use the Service for:</p>
+            <ul>
+                <li><strong>Illegal Content:</strong> Violating any local, state, national, or international law</li>
+                <li><strong>Harassment:</strong> Threats, intimidation, or harassment of other users</li>
+                <li><strong>Malware:</strong> Transmitting viruses, malware, or harmful code</li>
+                <li><strong>Spam:</strong> Unsolicited commercial messages or phishing attempts</li>
+                <li><strong>Impersonation:</strong> Falsely claiming to be another person or entity</li>
+                <li><strong>Unauthorized Access:</strong> Attempting to gain unauthorized access to systems or accounts</li>
+                <li><strong>Intellectual Property Violations:</strong> Infringing on copyrights, patents, or trademarks</li>
+                <li><strong>Abuse:</strong> Excessive server load, denial of service attacks, or system abuse</li>
+                <li><strong>Sensitive Content:</strong> Sharing child exploitation material, graphic violence, or non-consensual intimate content</li>
+            </ul>
+
+            <div class="warning">
+                <strong>Enforcement:</strong> Violations of this policy may result in immediate account suspension or termination, without refund of any fees.
+            </div>
+        </div>
+
+        <div class="content-section" id="intellectual-property">
+            <h2>5. Intellectual Property Rights</h2>
+
+            <h3>Orbyss IP</h3>
+            <p>The Service, including logos, design, graphics, and functionality (excluding user-generated content), is protected by copyright and other intellectual property laws. You may not reproduce, adapt, or reverse-engineer any part of the Service, except as permitted by the Apache 2.0 License.</p>
+
+            <h3>Third-Party IP</h3>
+            <p>The Service may contain third-party content and integrations. Your use is subject to the third-party's terms and licenses.</p>
+
+            <h3>Trademark Notice</h3>
+            <p>"Orbyss" and related logos are trademarks of Orbyss Inc. You may not use these trademarks without written permission.</p>
+        </div>
+
+        <div class="content-section" id="content-ownership">
+            <h2>6. Content Ownership & Responsibility</h2>
+
+            <h3>Your Content</h3>
+            <p>You retain all rights to content you create or upload to Orbyss. By uploading content, you grant Orbyss a non-exclusive, royalty-free license to:</p>
+            <ul>
+                <li>Store and backup your content</li>
+                <li>Display content to you and your team members</li>
+                <li>Perform necessary processing and indexing</li>
+                <li>Use aggregated, anonymized data for service improvement</li>
+            </ul>
+
+            <h3>Content Responsibility</h3>
+            <p>You are solely responsible for content you create, upload, or share. You warrant that:</p>
+            <ul>
+                <li>You own or have permission to use all content</li>
+                <li>Content does not violate any third-party rights</li>
+                <li>Content is not illegal or harmful</li>
+                <li>You comply with all applicable laws regarding content</li>
+            </ul>
+
+            <h3>Content Removal</h3>
+            <p>We reserve the right to remove content that violates these Terms or applicable law, with or without notice.</p>
+        </div>
+
+        <div class="content-section" id="limitation-liability">
+            <h2>7. Limitation of Liability</h2>
+
+            <p>TO THE FULLEST EXTENT PERMITTED BY LAW, ORBYSS SHALL NOT BE LIABLE FOR:</p>
+            <ul>
+                <li>Indirect, incidental, special, or consequential damages</li>
+                <li>Loss of data, revenue, profits, or business interruption</li>
+                <li>Third-party claims or damages arising from your use</li>
+                <li>Data loss, corruption, or unauthorized access</li>
+                <li>Any damages exceeding the amount paid by you in the past 12 months</li>
+            </ul>
+
+            <p><strong>This limitation applies even if we have been advised of the possibility of such damages.</strong></p>
+        </div>
+
+        <div class="content-section" id="disclaimer">
+            <h2>8. Warranty Disclaimer</h2>
+
+            <div class="warning">
+                <strong>AS-IS SERVICE:</strong> The Service is provided "AS IS" without warranties of any kind, either express or implied.
+            </div>
+
+            <p>Orbyss disclaims all warranties, including:</p>
+            <ul>
+                <li>Merchantability or fitness for a particular purpose</li>
+                <li>Non-infringement of third-party rights</li>
+                <li>Uninterrupted or error-free operation</li>
+                <li>Accuracy, completeness, or reliability of content</li>
+                <li>Security or privacy of your data</li>
+            </ul>
+
+            <p>While we maintain industry-standard security measures, we cannot guarantee absolute protection against unauthorized access or data loss.</p>
+        </div>
+
+        <div class="content-section" id="termination">
+            <h2>9. Termination</h2>
+
+            <h3>By Us</h3>
+            <p>We reserve the right to suspend or terminate your account:</p>
+            <ul>
+                <li>For violation of these Terms</li>
+                <li>For non-payment or fraud</li>
+                <li>For illegal activity or harmful conduct</li>
+                <li>For inactivity (notification provided in advance)</li>
+                <li>For any reason with 30 days' notice</li>
+            </ul>
+
+            <h3>By You</h3>
+            <p>You may terminate your account anytime by contacting support. Upon termination:</p>
+            <ul>
+                <li>Your access to the Service ceases immediately</li>
+                <li>Data is retained as per Privacy Policy</li>
+                <li>Outstanding fees remain due</li>
+            </ul>
+
+            <h3>Effect of Termination</h3>
+            <p>Sections regarding limitations of liability, intellectual property, and governing law survive termination.</p>
+        </div>
+
+        <div class="content-section" id="governing-law">
+            <h2>10. Governing Law & Dispute Resolution</h2>
+
+            <h3>Governing Law</h3>
+            <p>These Terms are governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to conflicts of law principles.</p>
+
+            <h3>Dispute Resolution</h3>
+            <p>Any dispute arising from these Terms shall be resolved as follows:</p>
+            <ul>
+                <li><strong>Negotiation:</strong> In good faith for 30 days</li>
+                <li><strong>Mediation:</strong> Neutral mediation before litigation</li>
+                <li><strong>Arbitration:</strong> Binding arbitration under [Your Jurisdiction] rules (if applicable)</li>
+                <li><strong>Jurisdiction:</strong> If litigation is necessary, exclusive jurisdiction in courts of [Your Jurisdiction]</li>
+            </ul>
+
+            <h3>Class Action Waiver</h3>
+            <p>Both parties agree to bring disputes on an individual basis, not as class actions or representative proceedings.</p>
+        </div>
+
+        <div class="content-section" id="contact">
+            <h2>11. Contact Information</h2>
+            <p>For questions about these Terms of Service:</p>
+            <ul>
+                <li><strong>Email:</strong> legal@orbyss.io</li>
+                <li><strong>Support Portal:</strong> https://support.orbyss.io</li>
+                <li><strong>Mailing Address:</strong> Orbyss Inc., Legal Department, [Your Address], [City, State, ZIP]</li>
+            </ul>
+
+            <h3>Modifications</h3>
+            <p>We may modify these Terms at any time. Changes become effective upon posting. Continued use constitutes acceptance of modified Terms.</p>
+
+            <h3>Severability</h3>
+            <p>If any provision is found unenforceable, the remaining provisions continue in full force and effect.</p>
+
+            <h3>Entire Agreement</h3>
+            <p>These Terms, along with our Privacy Policy, constitute the entire agreement between you and Orbyss regarding the Service.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Orbyss. All rights reserved. Licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0" class="footer-link">Apache 2.0 License</a></p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="/policy/" class="footer-link">Privacy Policy</a> |
+            <a href="/" class="footer-link">Home</a>
+        </p>
+    </footer>
+</body>
+</html>

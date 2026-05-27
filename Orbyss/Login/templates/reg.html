@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Orbyss</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #eef2f6 100%);
+            color: #1e293b;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            gap: 3rem;
+        }
+
+        .register-left {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .register-left-logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .register-left-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .register-left-content p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .register-left-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .feature-item-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feature-item-text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-item-text p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        .register-left-bottom {
+            font-size: 0.85rem;
+            opacity: 0.75;
+        }
+
+        .register-right {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .register-form-container {
+            max-width: 420px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .register-header {
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        .register-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Error Messages */
+        .error-alert {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #fecaca;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .error-alert ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .error-alert li {
+            margin: 0;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .error-alert strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #7f1d1d;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.25s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.35s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+        .form-group:nth-child(6) { animation-delay: 0.45s; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #dc2626;
+            background-color: #fef2f2;
+        }
+
+        .field-errors {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .password-requirements {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .password-requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-requirement:last-child {
+            margin-bottom: 0;
+        }
+
+        .requirement-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .requirement-icon.met {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: #667eea;
+        }
+
+        .terms-checkbox label {
+            margin: 0;
+            font-weight: 400;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .terms-checkbox a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .terms-checkbox a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+            animation: fadeInUp 0.8s ease-out 0.55s both;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+        }
+
+        @media (max-width: 1024px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .register-left {
+                order: 2;
+            }
+
+            .register-right {
+                order: 1;
+                padding: 2rem;
+            }
+
+            .register-left-content h2 {
+                font-size: 1.75rem;
+            }
+
+            .register-left-features {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                display: block;
+            }
+
+            .register-container {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .register-left {
+                padding: 2rem;
+                min-height: 300px;
+            }
+
+            .register-right {
+                padding: 1.5rem;
+            }
+
+            .register-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Left Side -->
+        <div class="register-left">
+            <div>
+                <div class="register-left-logo">Orbyss</div>
+                <div class="register-left-content">
+                    <h2>Start Collaborating Today</h2>
+                    <p>Join teams worldwide using Orbyss to manage projects, communicate, and ship faster.</p>
+                </div>
+            </div>
+
+            <div class="register-left-features">
+                <div class="feature-item">
+                    <div class="feature-item-icon">⚡</div>
+                    <div class="feature-item-text">
+                        <h4>Get Started Instantly</h4>
+                        <p>No credit card required, free forever</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-item-icon">🔒</div>
+                    <div class="feature-item-text">
+                        <h4>Enterprise Security</h4>
+                        <p>Your data is encrypted and protected</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-item-icon">👥</div>
+                    <div class="feature-item-text">
+                        <h4>Team Collaboration</h4>
+                        <p>Invite unlimited team members</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="register-left-bottom">
+                Join 10,000+ developers worldwide
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="register-right">
+            <div class="register-form-container">
+                <div class="register-header">
+                    <h1>Create Your Account</h1>
+                    <p>Join Orbyss and unify your team's workflow</p>
+                </div>
+
+                <!-- Error Messages -->
+                {% if form.errors %}
+                <div class="error-alert">
+                    {% for field, errors in form.errors.items %}
+                        <strong>{{ field|title }}</strong>
+                        {% for error in errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Registration Form -->
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <!-- First Name & Last Name Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input 
+                                type="text"
+                                id="firstName"
+                                name="first_name"
+                                placeholder="John"
+                                value="{{ form.first_name.value|default:'' }}"
+                                required
+                                {% if form.first_name.errors %}class="error"{% endif %}
+                            >
+                            {% if form.first_name.errors %}
+                                <span class="field-errors">{{ form.first_name.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input 
+                                type="text"
+                                id="lastName"
+                                name="last_name"
+                                placeholder="Doe"
+                                value="{{ form.last_name.value|default:'' }}"
+                                required
+                                {% if form.last_name.errors %}class="error"{% endif %}
+                            >
+                            {% if form.last_name.errors %}
+                                <span class="field-errors">{{ form.last_name.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input 
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            value="{{ form.email.value|default:'' }}"
+                            required
+                            {% if form.email.errors %}class="error"{% endif %}
+                        >
+                        {% if form.email.errors %}
+                            <span class="field-errors">{{ form.email.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="••••••••"
+                            required
+                            oninput="updatePasswordRequirements()"
+                            {% if form.password.errors %}class="error"{% endif %}
+                        >
+                        {% if form.password.errors %}
+                            <span class="field-errors">{{ form.password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Requirements -->
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="password-requirement">
+                            <div class="requirement-icon" id="lengthIcon">✗</div>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="password-requirement">
+                            <div class="requirement-icon" id="uppercaseIcon">✗</div>
+                            <span>One uppercase letter</span>
+                        </div>
+                        <div class="password-requirement">
+                            <div class="requirement-icon" id="numberIcon">✗</div>
+                            <span>One number</span>
+                        </div>
+                        <div class="password-requirement">
+                            <div class="requirement-icon" id="specialIcon">✗</div>
+                            <span>One special character (!@#$%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Company -->
+                    <div class="form-group">
+                        <label for="company">Company (Optional)</label>
+                        <input 
+                            type="text"
+                            id="company"
+                            name="company"
+                            placeholder="Your company name"
+                            value="{{ form.company.value|default:'' }}"
+                        >
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="terms-checkbox">
+                        <input 
+                            type="checkbox"
+                            id="terms"
+                            name="terms_agreed"
+                            required
+                        >
+                        <label for="terms">
+                            I agree to the <a href="/Term/">Terms & Conditions</a> and <a href="/policy/">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'login_page' %}">Sign in instead</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePasswordRequirements() {
+            const password = document.getElementById('password').value;
+            const requirementsBox = document.getElementById('passwordRequirements');
+            
+            if (password) {
+                requirementsBox.style.display = 'block';
+            } else {
+                requirementsBox.style.display = 'none';
+                return;
+            }
+
+            // Check requirements
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+            updateRequirement('lengthIcon', hasLength);
+            updateRequirement('uppercaseIcon', hasUppercase);
+            updateRequirement('numberIcon', hasNumber);
+            updateRequirement('specialIcon', hasSpecial);
+        }
+
+        function updateRequirement(elementId, isMet) {
+            const element = document.getElementById(elementId);
+            if (isMet) {
+                element.className = 'requirement-icon met';
+                element.textContent = '✓';
+            } else {
+                element.className = 'requirement-icon unmet';
+                element.textContent = '✗';
+            }
+        }
+
+        // Highlight error fields on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => {
+                if (input.classList.contains('error')) {
+                    input.focus();
+                }
+            });
+        });
+
+        // Real-time field validation
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                this.classList.add('error');
+            } else {
+                this.classList.remove('error');
+            }
+        });
+
+        document.getElementById('firstName').addEventListener('blur', function() {
+            if (this.value.trim().length < 2) {
+                this.classList.add('error');
+            } else {
+                this.classList.remove('error');
+            }
+        });
+
+        document.getElementById('lastName').addEventListener('blur', function() {
+            if (this.value.trim().length < 2) {
+                this.classList.add('error');
+            } else {
+                this.classList.remove('error');
+            }
+        });
+    </script>
+</body>
+</html>
