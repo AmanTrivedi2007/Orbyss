@@ -41,7 +41,7 @@ class RegisterForm(forms.Form):
         if len(password)<8:
 
             raise forms.ValidationError(
-                "Password must contain 8 characters"
+                "Password must contain at least 8 characters"
             )
 
         if not re.search(
@@ -50,7 +50,7 @@ class RegisterForm(forms.Form):
         ):
 
             raise forms.ValidationError(
-                "Need uppercase"
+                "Password must contain at least one uppercase letter"
             )
 
         if not re.search(
@@ -59,7 +59,16 @@ class RegisterForm(forms.Form):
         ):
 
             raise forms.ValidationError(
-                "Need number"
+                "Password must contain at least one number"
+            )
+
+        if not re.search(
+            "[!@#$%^&*(),.?\":{}|<>]",
+            password
+        ):
+
+            raise forms.ValidationError(
+                "Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>)"
             )
 
         return password

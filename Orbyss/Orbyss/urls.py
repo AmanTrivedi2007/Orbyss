@@ -22,5 +22,6 @@ urlpatterns = [
     path('',views.index,name="index_page"),
     path('Term/',views.term,name="Term_page"),
     path('policy/',views.privacy,name="Privacy_page"),
-    path('auth/',include('Login.urls'))
+    path('auth/',include('Login.urls')),
+    path('dashboard/',include('dashboard.urls'))
 ]

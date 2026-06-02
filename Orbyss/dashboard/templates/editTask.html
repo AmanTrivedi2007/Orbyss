@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task - Orbyss</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 30px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .page-container { max-width: 900px; margin: 0 auto; }
+        .card-container { background: white; border-radius: 18px; box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2); padding: 40px; margin-bottom: 30px; }
+        .page-header { text-align: center; margin-bottom: 35px; color: white; }
+        .page-header h1 { font-size: 32px; margin-bottom: 10px; font-weight: 800; }
+        .form-label { font-weight: 600; margin-bottom: 8px; display: block; color: #333; }
+        .form-control, .form-select { border-radius: 10px; padding: 12px 14px; border: 1px solid #dcdcdc; transition: border-color 0.2s ease; }
+        .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.18); }
+        .btn-primary-custom, .btn-secondary-custom { border-radius: 10px; font-weight: 700; padding: 12px 24px; min-width: 150px; }
+        .btn-primary-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; }
+        .btn-secondary-custom { background: #f0f0f0; border: none; color: #333; }
+        .alert-card { border-radius: 14px; padding: 18px 22px; margin-bottom: 24px; }
+        .error-text { color: #dc3545; font-size: 13px; margin-top: 6px; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Edit Task</h1>
+            <p>Update task details, assignment, and completion comment for this workspace task.</p>
+        </div>
+
+        {% if success_message %}
+            <div class="alert alert-success alert-card" role="alert">
+                <i class="bi bi-check-circle-fill"></i> {{ success_message }}
+            </div>
+        {% endif %}
+
+        <div class="card-container">
+            <form method="POST" action="{% url 'edit_task_page' task.id %}">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label class="form-label">Workspace</label>
+                    <input type="text" class="form-control" value="{{ workspace.name }}" disabled>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="taskName">Task Name</label>
+                    <input id="taskName" name="task_name" type="text" class="form-control"
+                        value="{{ form_data.task_name|default:task.name }}" placeholder="Enter task title" required>
+                    {% if errors.task_name %}
+                        <div class="error-text">{{ errors.task_name }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="taskDescription">Task Information</label>
+                    <textarea id="taskDescription" name="task_description" class="form-control" rows="4" placeholder="Describe the task details">{{ form_data.task_description|default:task.description }}</textarea>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="prioritySelect">Priority</label>
+                        <select id="prioritySelect" name="priority" class="form-select">
+                            <option value="low" {% if form_data.priority == 'low' or task.priority == 'low' and not form_data.priority %}selected{% endif %}>Low</option>
+                            <option value="medium" {% if form_data.priority == 'medium' or task.priority == 'medium' and not form_data.priority %}selected{% endif %}>Medium</option>
+                            <option value="high" {% if form_data.priority == 'high' or task.priority == 'high' and not form_data.priority %}selected{% endif %}>High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="deadlineInput">Deadline</label>
+                        <input id="deadlineInput" name="deadline" type="date" class="form-control"
+                            value="{{ form_data.deadline|default:task.deadline|date:'Y-m-d' }}" required>
+                        {% if errors.deadline %}
+                            <div class="error-text">{{ errors.deadline }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="assignedToSelect">Assign To</label>
+                        <select id="assignedToSelect" name="assigned_to" class="form-select" required>
+                            <option value="">Select a workspace member</option>
+                            {% for member in members %}
+                                <option value="{{ member.id }}"
+                                    {% if form_data.assigned_to == member.id|stringformat:"s" or task.assigned_to.id == member.id and not form_data.assigned_to %}selected{% endif %}>
+                                    {{ member.first_name|default:member.username }} {{ member.last_name|default:'' }} ({{ member.email }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if errors.assigned_to %}
+                            <div class="error-text">{{ errors.assigned_to }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if task.completed %}
+                    <div class="mb-4 mt-4">
+                        <label class="form-label" for="completionComment">Completion Comment</label>
+                        <textarea id="completionComment" name="completion_comment" class="form-control" rows="4" placeholder="Update or add a completion comment">{{ form_data.completion_comment|default:task.completion_comment }}</textarea>
+                    </div>
+                {% endif %}
+
+                <div class="mt-4 d-flex gap-3 flex-wrap">
+                    <button type="submit" class="btn btn-primary-custom">Save Changes</button>
+                    <a href="{% url 'workspace_task_list' workspace.id %}" class="btn btn-secondary-custom">Back to Workspace Tasks</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Task - Orbyss</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card-container {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+            color: white;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        .page-header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid #dcdcdc;
+            transition: border-color 0.2s ease;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.18);
+        }
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            border-radius: 10px;
+            font-weight: 700;
+            padding: 12px 24px;
+            min-width: 150px;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+        .btn-secondary-custom {
+            background: #f0f0f0;
+            border: none;
+            color: #333;
+        }
+        .alert-card {
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 24px;
+        }
+        .error-text {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        .member-note {
+            font-size: 13px;
+            color: #555;
+            margin-top: 6px;
+        }
+        .assigned-list {
+            margin-top: 30px;
+        }
+        .assigned-list h3 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .task-note {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Add Task</h1>
+            <p>Create a task and assign it to a member in the selected workspace.</p>
+        </div>
+
+        {% if success_message %}
+            <div class="alert alert-success alert-card" role="alert">
+                <i class="bi bi-check-circle-fill"></i> {{ success_message }}
+            </div>
+        {% endif %}
+
+        <div class="card-container">
+            <form method="POST" action="{% if selected_workspace %}{% url 'add_task_for_workspace' selected_workspace.id %}{% else %}{% url 'add_task_page' %}{% endif %}">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label class="form-label" for="workspaceSelect">Workspace</label>
+                    <select id="workspaceSelect" name="workspace_id" class="form-select" required>
+                        <option value="">Select a workspace</option>
+                        {% for workspace in workspaces %}
+                            <option value="{{ workspace.id }}"
+                                {% if selected_workspace and workspace.id == selected_workspace.id %}selected{% endif %}>
+                                {{ workspace.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.workspace_id %}
+                        <div class="error-text">{{ errors.workspace_id }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="taskName">Task Name</label>
+                    <input id="taskName" name="task_name" type="text" class="form-control"
+                        value="{{ form_data.task_name|default:'' }}" placeholder="Enter task title" required>
+                    {% if errors.task_name %}
+                        <div class="error-text">{{ errors.task_name }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="taskDescription">Task Information</label>
+                    <textarea id="taskDescription" name="task_description" class="form-control" rows="4"
+                        placeholder="Describe the task details">{{ form_data.task_description|default:'' }}</textarea>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="prioritySelect">Priority</label>
+                        <select id="prioritySelect" name="priority" class="form-select">
+                            <option value="low" {% if form_data.priority == 'low' %}selected{% endif %}>Low</option>
+                            <option value="medium" {% if form_data.priority == 'medium' or not form_data.priority %}selected{% endif %}>Medium</option>
+                            <option value="high" {% if form_data.priority == 'high' %}selected{% endif %}>High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="deadlineInput">Deadline</label>
+                        <input id="deadlineInput" name="deadline" type="date" class="form-control"
+                            value="{{ form_data.deadline|default:'' }}" required>
+                        {% if errors.deadline %}
+                            <div class="error-text">{{ errors.deadline }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="assignedToSelect">Assign To</label>
+                        <select id="assignedToSelect" name="assigned_to" class="form-select" required>
+                            <option value="">Select a workspace member</option>
+                        </select>
+                        {% if errors.assigned_to %}
+                            <div class="error-text">{{ errors.assigned_to }}</div>
+                        {% endif %}
+                        <div class="member-note">Only users already added to the selected workspace appear here. You may also assign tasks to yourself if you are the workspace owner.</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-3 flex-wrap">
+                    <button type="submit" class="btn btn-primary-custom">Create Task</button>
+                    <a href="{% url 'dashboard_page' %}" class="btn btn-secondary-custom">Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="assigned-list">
+            <h3>How it works</h3>
+            <p class="task-note">Choose the workspace, then select one of its members. The task will be attached to the workspace and assigned to that user.</p>
+        </div>
+    </div>
+
+    <script>
+        function loadWorkspaceMembers(workspaceId) {
+            const select = document.getElementById('assignedToSelect');
+            select.innerHTML = '<option value="">Loading members...</option>';
+
+            if (!workspaceId) {
+                select.innerHTML = '<option value="">Select a workspace member</option>';
+                return;
+            }
+
+            fetch(`{% url "get_members" %}?workspace_id=${workspaceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    select.innerHTML = '<option value="">Select a workspace member</option>';
+                    if (!data.members || data.members.length === 0) {
+                        select.innerHTML = '<option value="">No workspace members available</option>';
+                        return;
+                    }
+                    data.members.forEach(member => {
+                        const option = document.createElement('option');
+                        option.value = member.id;
+                        option.textContent = `${member.first_name || 'User'} ${member.last_name || ''} (${member.email})`;
+                        if (member.id == '{{ form_data.assigned_to|default:"" }}') {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+                })
+                .catch(() => {
+                    select.innerHTML = '<option value="">Unable to load members</option>';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const workspaceSelect = document.getElementById('workspaceSelect');
+            if (workspaceSelect.value) {
+                loadWorkspaceMembers(workspaceSelect.value);
+            }
+            workspaceSelect.addEventListener('change', function() {
+                loadWorkspaceMembers(this.value);
+            });
+        });
+    </script>
+</body>
+</html>

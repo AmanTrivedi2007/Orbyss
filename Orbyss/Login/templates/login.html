@@ -390,13 +390,22 @@
                     <p>Sign in to access your workspace and collaborate with your team</p>
                 </div>
 
-                <form id="loginForm" onsubmit="handleLogin(event)">
+                {% if error %}
+                    <div style="background: #fee2e2; color: #991b1b; padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #dc2626; font-size: 14px;">
+                        <i class="bi bi-exclamation-circle"></i> {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            placeholder="you@example.com" 
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            value="{{ request.POST.email }}"
                             required
                         >
                         <div class="error-message" id="emailError"></div>
@@ -404,10 +413,11 @@
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            placeholder="••••••••" 
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="••••••••"
                             required
                         >
                         <div class="error-message" id="passwordError"></div>
@@ -445,42 +455,7 @@
     </div>
 
     <script>
-        function handleLogin(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('remember').checked;
-
-            // Reset error messages
-            document.getElementById('emailError').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
-
-            // Validation
-            if (!email || !password) {
-                if (!email) {
-                    document.getElementById('emailError').textContent = 'Email is required';
-                    document.getElementById('emailError').style.display = 'block';
-                }
-                if (!password) {
-                    document.getElementById('passwordError').textContent = 'Password is required';
-                    document.getElementById('passwordError').style.display = 'block';
-                }
-                return;
-            }
-
-            if (password.length < 6) {
-                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
-                document.getElementById('passwordError').style.display = 'block';
-                return;
-            }
-
-            // Success message (demo)
-            alert(`Login successful!\nEmail: ${email}\nRemember me: ${rememberMe}`);
-            
-            // You would normally redirect here
-            // window.location.href = 'dashboard.html';
-        }
+        
     </script>
 </body>
 </html>

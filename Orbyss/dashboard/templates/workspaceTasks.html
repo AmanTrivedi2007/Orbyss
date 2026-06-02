@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ workspace.name }} Tasks - Orbyss</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .page-container { max-width: 1100px; margin: 0 auto; }
+        .header { color: white; text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 34px; font-weight: 800; margin-bottom: 8px; }
+        .header p { opacity: 0.95; font-size: 15px; }
+        .task-card { border-radius: 16px; padding: 24px; background: rgba(255, 255, 255, 0.98); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); margin-bottom: 22px; border: 1px solid #e9ecef; }
+        .task-meta { display: flex; flex-wrap: wrap; gap: 10px; color: #475569; font-size: 14px; margin-bottom: 16px; }
+        .task-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+        .task-title { font-size: 22px; font-weight: 700; color: #1f2937; }
+        .badge-status { border-radius: 999px; padding: 8px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+        .status-completed { background: #d1fae5; color: #0f5132; }
+        .status-pending { background: #ffedd5; color: #7c2d12; }
+        .priority-chip { padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+        .priority-low { background: #e2f4ff; color: #0f5132; }
+        .priority-medium { background: #fff4e5; color: #664d03; }
+        .priority-high { background: #ffe5e5; color: #842029; }
+        .empty-state { text-align: center; padding: 50px 30px; border-radius: 18px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="header">
+            <h1>{{ workspace.name }} Task List</h1>
+            <p>Only the workspace owner can see these tasks and their completion comments.</p>
+        </div>
+
+        <div class="mb-4 d-flex flex-wrap justify-content-between gap-2 align-items-center">
+            <div>
+                <a href="{% url 'dashboard_page' %}" class="btn btn-light btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="?status=active" class="btn btn-sm {% if status != 'completed' %}btn-primary text-white{% else %}btn-outline-light{% endif %}">Active</a>
+                <a href="?status=completed" class="btn btn-sm {% if status == 'completed' %}btn-primary text-white{% else %}btn-outline-light{% endif %}">Completed</a>
+            </div>
+        </div>
+
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="task-card">
+                    <div class="task-header">
+                        <div>
+                            <div class="task-title">{{ task.name }}</div>
+                            <div class="task-meta">
+                                <span><strong>Assigned to:</strong> {{ task.assigned_to.first_name|default:task.assigned_to.username }} ({{ task.assigned_to.email }})</span>
+                                <span><strong>Deadline:</strong> {{ task.deadline|date:'M d, Y' }}</span>
+                                <span class="priority-chip priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            {% if task.completed %}
+                                <span class="badge-status status-completed"><i class="bi bi-check-circle"></i> Completed</span>
+                            {% else %}
+                                <span class="badge-status status-pending"><i class="bi bi-hourglass-split"></i> Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <p style="color:#475569; line-height:1.7;">{{ task.description|default:'No task description provided.' }}</p>
+                    <div class="task-meta" style="margin-top: 20px;">
+                        <span><strong>Created by:</strong> {{ task.created_by.first_name|default:task.created_by.username }}</span>
+                        <span><strong>Created on:</strong> {{ task.created_at|date:'M d, Y' }}</span>
+                        {% if task.completed and task.completed_at %}
+                            <span><strong>Completed on:</strong> {{ task.completed_at|date:'M d, Y' }}</span>
+                        {% endif %}
+                    </div>
+                    {% if task.completed and task.completion_comment %}
+                        <div style="margin-top:16px; padding:18px; background:#f8fafc; border-radius:14px; border:1px solid #e2e8f0;">
+                            <strong>Completion comment</strong>
+                            <p style="margin:8px 0 0 0; color:#475569;">{{ task.completion_comment }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="mt-4">
+                        <a href="{% url 'task_detail' task.id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-info-circle"></i> View details</a>
+                        <a href="{% url 'edit_task_page' task.id %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Edit task</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <h3>No tasks found</h3>
+                <p>There are no {{ status }} tasks for this workspace yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
