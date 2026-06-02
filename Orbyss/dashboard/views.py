@@ -207,6 +207,7 @@ def complete_task(request, task_id):
     if not completion_comment:
         return render(request, 'taskDetail.html', {
             'task': task,
+            'current_user': request.user,
             'completion_error': 'Please add a completion comment describing what you did before marking this task complete.',
         })
 

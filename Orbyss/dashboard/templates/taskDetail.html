@@ -57,6 +57,28 @@
             margin-bottom: 8px;
             color: #334155;
         }
+        .btn-rounded {
+            border-radius: 999px;
+            padding: 10px 18px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-rounded:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.18);
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-top: 22px;
+        }
+        textarea.form-control {
+            border-radius: 12px;
+        }
+        .detail-card .detail-item span {
+            line-height: 1.7;
+        }
         .detail-item span {
             color: #475569;
         }
@@ -80,7 +102,9 @@
 <body>
     <div class="page-container">
         <div class="mb-4">
-            <a href="{% url 'view_tasks_page' %}" class="back-link"><i class="bi bi-arrow-left"></i> Back to My Tasks</a>
+            <a href="{% url 'view_tasks_page' %}" class="back-link btn-rounded" style="background:#ffffff; padding:12px 18px; display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(55,65,81,0.12);">
+                <i class="bi bi-arrow-left"></i> Back to My Tasks
+            </a>
         </div>
         <div class="detail-card">
             <div class="detail-header">
@@ -121,7 +145,14 @@
             {% if task.completed and task.completed_at %}
                 <div class="detail-item" style="margin-top:20px; background:#ecfdf5; border-color:#bbf7d0;">
                     <strong>Completion</strong>
-                    <span>Marked complete on {{ task.completed_at|date:'F j, Y \a\t g:i A' }} by {{ task.completed_by.first_name|default:task.completed_by.username }}</span>
+                    <span>
+                        Marked complete on {{ task.completed_at|date:'F j, Y \a\t g:i A' }}
+                        {% if task.completed_by %}
+                            by {{ task.completed_by.first_name|default:task.completed_by.username }}
+                        {% else %}
+                            by Unknown user
+                        {% endif %}
+                    </span>
                 </div>
                 {% if task.completion_comment %}
                     <div class="detail-item" style="margin-top:20px; background:#ecfdf5; border-color:#bbf7d0;">
@@ -148,8 +179,8 @@
             {% endif %}
 
             {% if current_user == task.workspace.owner %}
-                <div class="mt-4">
-                    <a href="{% url 'edit_task_page' task.id %}" class="btn btn-outline-primary">
+                <div class="action-buttons">
+                    <a href="{% url 'edit_task_page' task.id %}" class="btn btn-outline-primary btn-rounded">
                         <i class="bi bi-pencil-square"></i> Edit Task
                     </a>
                 </div>

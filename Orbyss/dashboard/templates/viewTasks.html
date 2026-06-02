@@ -64,6 +64,58 @@
             margin-bottom: 16px;
             line-height: 1.6;
         }
+        .btn-rounded {
+            border-radius: 999px;
+            padding: 8px 16px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-rounded:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.18);
+        }
+        .status-tabs {
+            display: inline-flex;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.12);
+        }
+        .status-tabs a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            color: white;
+            text-decoration: none;
+            border-right: 1px solid rgba(255,255,255,0.16);
+        }
+        .status-tabs a:last-child { border-right: none; }
+        .status-tabs a.active {
+            background: rgba(255,255,255,0.95);
+            color: #1f2937;
+        }
+        .task-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .task-footer form {
+            margin: 0;
+        }
+        .task-footer .btn {
+            box-shadow: none;
+        }
+        .task-footer .btn-success {
+            min-width: 145px;
+        }
+        .task-footer .badge {
+            border-radius: 999px;
+            padding: 10px 16px;
+        }
         .badge-workspace {
             background: #f1f5ff;
             color: #334155;
@@ -103,13 +155,13 @@
 
         <div class="mb-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div>
-                <a href="{% url 'dashboard_page' %}" class="btn btn-light btn-sm">
+                <a href="{% url 'dashboard_page' %}" class="btn btn-light btn-rounded">
                     <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
-            <div class="btn-group" role="group" aria-label="Task status filter">
-                <a href="?status=active" class="btn btn-sm {% if status != 'completed' %}btn-primary text-white{% else %}btn-outline-light{% endif %}">Active</a>
-                <a href="?status=completed" class="btn btn-sm {% if status == 'completed' %}btn-primary text-white{% else %}btn-outline-light{% endif %}">Completed</a>
+            <div class="status-tabs" role="group" aria-label="Task status filter">
+                <a href="?status=active" class="{% if status != 'completed' %}active{% endif %}">Active</a>
+                <a href="?status=completed" class="{% if status == 'completed' %}active{% endif %}">Completed</a>
             </div>
         </div>
 
@@ -136,8 +188,8 @@
                             <span><strong>Completed on:</strong> {{ task.completed_at|date:'M d, Y' }}</span>
                         {% endif %}
                     </div>
-                    <div class="task-header" style="justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                        <a href="{% url 'task_detail' task.id %}" class="btn btn-outline-primary btn-sm">
+                    <div class="task-footer">
+                        <a href="{% url 'task_detail' task.id %}" class="btn btn-outline-primary btn-rounded">
                             <i class="bi bi-info-circle"></i> View Details
                         </a>
                         {% if task.completed %}
@@ -145,7 +197,7 @@
                         {% else %}
                             <form method="post" action="{% url 'complete_task' task.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" class="btn btn-success btn-rounded">
                                     <i class="bi bi-check2-circle"></i> Mark Complete
                                 </button>
                             </form>
