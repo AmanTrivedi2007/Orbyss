@@ -8,3 +8,5 @@ db.sqlite3
 .env
 media/
 agent.md
+PERFORMACE_GUIDE.md
+ROOT_CAUSE_ANALYSIS.md
