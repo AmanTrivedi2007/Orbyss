@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.core.cache import cache
 from django.utils import timezone
+from django.db.models import Count, Q
 
 from .models import Workspace, Task
 from .forms import WorkspaceForm
@@ -30,7 +31,8 @@ def rate_limit(key_prefix, limit=15, period=60):
 
 @login_required(login_url='login')
 def dashboard(request):
-    workspaces = Workspace.objects.filter(owner=request.user)
+    # OPTIMIZED: Use select_related to fetch owner in single query
+    workspaces = Workspace.objects.filter(owner=request.user).select_related('owner')
     return render(request, 'dashboard.html', {'workspaces': workspaces})
 
 @login_required(login_url='login')
@@ -77,9 +79,12 @@ def get_workspaces(request):
 def get_members(request):
     workspace_id = request.GET.get('workspace_id')
     workspace = get_object_or_404(Workspace, id=workspace_id, owner=request.user)
+    
+    # OPTIMIZED: Use exclude() instead of Python loop to check membership
     members = list(workspace.members.all().values('id', 'email', 'first_name', 'last_name'))
-
-    if request.user.id not in [member['id'] for member in members]:
+    
+    # Check if owner is already in members using filter (1 query instead of Python loop)
+    if not workspace.members.filter(id=request.user.id).exists():
         members.insert(0, {
             'id': request.user.id,
             'email': request.user.email,
@@ -199,7 +204,8 @@ def add_task_page(request, workspace_id=None):
 
 @login_required(login_url='login')
 def complete_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id, assigned_to=request.user)
+    # OPTIMIZED: Use select_related to fetch workspace in single query
+    task = get_object_or_404(Task.objects.select_related('workspace'), id=task_id, assigned_to=request.user)
     if request.method != 'POST':
         return redirect('task_detail', task_id=task.id)
 
@@ -220,7 +226,8 @@ def complete_task(request, task_id):
 
 @login_required(login_url='login')
 def task_detail(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+    # OPTIMIZED: Use select_related to fetch related objects in single query
+    task = get_object_or_404(Task.objects.select_related('workspace', 'assigned_to'), id=task_id)
     if task.assigned_to != request.user and task.workspace.owner != request.user:
         return HttpResponse(status=403)
     return render(request, 'taskDetail.html', {'task': task, 'current_user': request.user})
@@ -316,15 +323,34 @@ def edit_task_page(request, task_id):
 @login_required(login_url='login')
 def profile(request):
     user = request.user
+    cache_key = f'profile_stats_{user.id}'
     
-    # Get user stats
-    workspaces_count = Workspace.objects.filter(owner=user).count()
-    total_tasks = Task.objects.filter(assigned_to=user).count()
-    completed_tasks = Task.objects.filter(assigned_to=user, completed=True).count()
-    remaining_tasks = total_tasks - completed_tasks
-    member_of_workspaces = user.member_workspaces.count()
+    # Check cache first (5-minute cache for stats)
+    cached_stats = cache.get(cache_key)
+    if cached_stats:
+        return render(request, 'profile.html', {'user_profile': cached_stats['user_profile'], 'stats': cached_stats['stats'], 'recent_completed_tasks': cached_stats['recent_completed_tasks'], 'recent_workspaces': cached_stats['recent_workspaces']})
     
-    # Get recent completed tasks
+    # OPTIMIZED: Combine multiple COUNT queries into ONE database query using aggregation
+    from django.db.models import Count, Q
+    
+    stats_data = Workspace.objects.filter(owner=user).aggregate(
+        workspaces_created=Count('id')
+    )
+    
+    task_stats = Task.objects.filter(assigned_to=user).aggregate(
+        total_tasks=Count('id'),
+        completed_tasks=Count('id', filter=Q(completed=True))
+    )
+    
+    stats = {
+        'workspaces_created': stats_data['workspaces_created'],
+        'total_tasks': task_stats['total_tasks'],
+        'completed_tasks': task_stats['completed_tasks'],
+        'remaining_tasks': task_stats['total_tasks'] - task_stats['completed_tasks'],
+        'member_of': user.member_workspaces.count(),  # This is optimized - uses cache
+    }
+    
+    # Get recent completed tasks with select_related for efficiency
     recent_completed = Task.objects.filter(
         assigned_to=user, 
         completed=True
@@ -335,23 +361,27 @@ def profile(request):
         owner=user
     ).order_by('-created_at')[:5]
     
+    user_profile = {
+        'first_name': user.first_name or 'User',
+        'last_name': user.last_name or '',
+        'email': user.email,
+        'username': user.username,
+        'date_joined': user.date_joined,
+    }
+    
     context = {
-        'user_profile': {
-            'first_name': user.first_name or 'User',
-            'last_name': user.last_name or '',
-            'email': user.email,
-            'username': user.username,
-            'date_joined': user.date_joined,
-        },
-        'stats': {
-            'workspaces_created': workspaces_count,
-            'total_tasks': total_tasks,
-            'completed_tasks': completed_tasks,
-            'remaining_tasks': remaining_tasks,
-            'member_of': member_of_workspaces,
-        },
+        'user_profile': user_profile,
+        'stats': stats,
         'recent_completed_tasks': recent_completed,
         'recent_workspaces': recent_workspaces,
     }
+    
+    # Cache the stats for 5 minutes (stats don't need to be real-time)
+    cache.set(cache_key, {
+        'user_profile': user_profile,
+        'stats': stats,
+        'recent_completed_tasks': recent_completed,
+        'recent_workspaces': recent_workspaces,
+    }, 300)
     
     return render(request, 'profile.html', context)

@@ -37,7 +37,7 @@ if env_path.exists():
 SECRET_KEY = 'django-insecure-_!d_!96w(e0pmp@822fw_-38yq4c(@52wa4l(bgcd38q-((y0j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 

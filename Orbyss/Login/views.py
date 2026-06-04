@@ -52,6 +52,9 @@ def login_page(request):
         user = authenticate(username=email, password=password)
         
         if user:
+            # Clear login attempts for this IP on successful login
+            ip = get_client_ip(request)
+            cache.delete(f"login_attempts:{ip}")
             login(request, user)
             return redirect("/dashboard/")
         else:
@@ -112,6 +115,16 @@ def register(request):
 
 
 def logout_page(request):
+    # Clear all user-related cache before logout
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        # Clear profile stats cache
+        cache.delete(f'profile_stats_{user_id}')
+        # Clear any rate limiting cache for this user
+        cache.delete(f'rate_limit:add_member:{user_id}')
+        cache.delete(f'rate_limit:remove_member:{user_id}')
+    
+    # Clear Django session
     logout(request)
     return redirect('index_page')
 
